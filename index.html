@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document Organization Game</title>
     <style>
         body {
@@ -170,7 +169,6 @@
                 padding: 20px;
             }
             
-            /* Remove flex-direction: column to keep stats in a row */
             .stats-panel {
                 flex-wrap: wrap;
             }
@@ -192,15 +190,15 @@
         <div class="stats-panel">
             <div class="stat-card">
                 <div class="stat-value">2:00</div>
-                <div class="stat-label">Time Left</div>
+                <div class="stat-label">⏰ Time Left</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">0</div>
-                <div class="stat-label">Score</div>
+                <div class="stat-label">🏆 Score</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">0%</div>
-                <div class="stat-label">Accuracy</div>
+                <div class="stat-label">🎯 Accuracy</div>
             </div>
         </div>
 
@@ -237,6 +235,9 @@
         <button class="start-button" id="startGame">Start Game</button>
     </div>
 
+    <!-- Include confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
     <script>
         const documents = [
             { id: 1, name: 'W-2 Form 2023', category: 'income' },
@@ -246,7 +247,19 @@
             { id: 5, name: '1099-INT Form', category: 'income' },
             { id: 6, name: 'Electric Bill', category: 'expenses' },
             { id: 7, name: '401k Statement', category: 'investments' },
-            { id: 8, name: 'Car Insurance', category: 'insurance' }
+            { id: 8, name: 'Car Insurance', category: 'insurance' },
+            { id: 9, name: 'Medical Bills', category: 'expenses' },
+            { id: 10, name: 'Property Tax Receipt', category: 'expenses' },
+            { id: 11, name: 'Dividend Statement', category: 'investments' },
+            { id: 12, name: 'Life Insurance Policy', category: 'insurance' },
+            { id: 13, name: 'Capital Gains Tax Form', category: 'income' },
+            { id: 14, name: 'Mortgage Statement', category: 'expenses' },
+            { id: 15, name: 'Mutual Fund Report', category: 'investments' },
+            { id: 16, name: 'Rental Income Statement', category: 'income' },
+            { id: 17, name: 'Vehicle Registration', category: 'expenses' },
+            { id: 18, name: 'Investment Property Insurance', category: 'insurance' },
+            { id: 19, name: 'Charitable Donation Receipt', category: 'expenses' },
+            { id: 20, name: 'Annuity Contract', category: 'investments' }
         ];
 
         let score = 0;
@@ -317,10 +330,17 @@
                 if (isCorrect) {
                     correctPlacements++;
                     score += 10;
+                } else {
+                    score -= 5; // Penalty for incorrect placement
                 }
                 
                 box.appendChild(doc);
                 updateStats();
+
+                // Check if all documents have been placed
+                if (document.getElementById('documentStack').children.length === 0) {
+                    endGame();
+                }
             });
         });
 
@@ -353,7 +373,16 @@
             score += timeBonus;
             updateStats();
             
-            alert(`Game Over!\nFinal Score: ${score}\nAccuracy: ${accuracy}%`);
+            // Trigger confetti explosion
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            setTimeout(() => {
+                alert(`Game Over!\nFinal Score: ${score}\nAccuracy: ${accuracy}%`);
+            }, 500); // Delay alert to allow confetti to show
         }
 
         document.getElementById('startGame').addEventListener('click', startGame);
